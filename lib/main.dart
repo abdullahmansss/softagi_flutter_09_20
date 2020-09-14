@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/login_screen.dart';
+import 'package:flutter_app/single_product.dart';
 
 void main() {
   runApp(MyApp());
