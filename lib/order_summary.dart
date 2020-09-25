@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class Model
@@ -13,47 +12,53 @@ class Model
 
 class OrderSummary extends StatefulWidget
 {
+  final String title;
+
+  OrderSummary({this.title});
+
   @override
   _OrderSummaryState createState() => _OrderSummaryState();
 }
 
 class _OrderSummaryState extends State<OrderSummary>
 {
+  dynamic initValue;
+  String s = 'Delivery Option';
+  var list = [
+    Model(
+      title: 'Abdullah',
+      price: 'EGP 517.00',
+      qty: '8',
+      image: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/llqs2a7mkbsk8idlsttf/air-max-90-shoe-bd1PN5.jpg',
+    ),
+    Model(
+      title: 'Omar Mahdy',
+      price: 'EGP 800.00',
+      qty: '2',
+      image: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/llqs2a7mkbsk8idlsttf/air-max-90-shoe-bd1PN5.jpg',
+    ),
+    Model(
+      title: 'Mustafa Gado',
+      price: 'EGP 517.00',
+      qty: '5',
+      image: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/llqs2a7mkbsk8idlsttf/air-max-90-shoe-bd1PN5.jpg',
+    ),
+    Model(
+      title: 'Abdullah Mansour Ali',
+      price: 'EGP 777.00',
+      qty: '1',
+      image: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/llqs2a7mkbsk8idlsttf/air-max-90-shoe-bd1PN5.jpg',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context)
   {
-    var list = [
-      Model(
-        title: 'Abdullah Mansour Ali',
-        price: 'EGP 517.00',
-        qty: '1',
-        image: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/llqs2a7mkbsk8idlsttf/air-max-90-shoe-bd1PN5.jpg',
-      ),
-      Model(
-        title: 'Omar Mahdy',
-        price: 'EGP 800.00',
-        qty: '2',
-        image: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/llqs2a7mkbsk8idlsttf/air-max-90-shoe-bd1PN5.jpg',
-      ),
-      Model(
-        title: 'Mustafa Gado',
-        price: 'EGP 517.00',
-        qty: '5',
-        image: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/llqs2a7mkbsk8idlsttf/air-max-90-shoe-bd1PN5.jpg',
-      ),
-      Model(
-        title: 'Abdullah Mansour Ali',
-        price: 'EGP 517.00',
-        qty: '1',
-        image: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/llqs2a7mkbsk8idlsttf/air-max-90-shoe-bd1PN5.jpg',
-      ),
-    ];
-
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
         title: Text(
-          'Order Summary'
+          widget.title,
         ),
         backgroundColor: Colors.indigo,
       ),
@@ -79,7 +84,7 @@ class _OrderSummaryState extends State<OrderSummary>
                           width: 10.0,
                         ),
                         Text(
-                          'Delivery Option',
+                          s,
                           style: TextStyle(
                             fontSize: 17.0,
                             fontWeight: FontWeight.w700,
@@ -97,11 +102,15 @@ class _OrderSummaryState extends State<OrderSummary>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Radio(
-                        value: true,
-                        groupValue: true,
+                        value: 0,
+                        groupValue: initValue,
                         onChanged: (value)
                         {
-
+                          setState(()
+                          {
+                            print('click');
+                            initValue = value;
+                          });
                         },
                       ),
                       Expanded(
@@ -304,7 +313,11 @@ class _OrderSummaryState extends State<OrderSummary>
                       borderRadius: BorderRadius.circular(2.0),
                     ),
                     child: FlatButton(
-                      onPressed: () {  },
+                      onPressed: () {
+                        setState(() {
+                          s = 'Abdullah Mansour';
+                        });
+                      },
                       child: Text(
                         'proceed to checkout'.toUpperCase(),
                         style: TextStyle(
