@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/user_info.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseScreen extends StatefulWidget {
+class DatabaseScreen extends StatefulWidget
+{
+  final bool showAppBar;
+
+  const DatabaseScreen({this.showAppBar});
+
   @override
   _DatabaseScreenState createState() => _DatabaseScreenState();
 }
@@ -22,9 +27,9 @@ class _DatabaseScreenState extends State<DatabaseScreen>
   Widget build(BuildContext context)
   {
     return Scaffold(
-      appBar: AppBar(
+      appBar: widget.showAppBar ? AppBar(
         title: Text('Database'),
-      ),
+      ) : null,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print('clicked');
