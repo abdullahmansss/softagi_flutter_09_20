@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/database_screen.dart';
 import 'package:flutter_app/home.dart';
+import 'package:flutter_app/modules/counter/counter_screen.dart';
+import 'package:flutter_app/modules/counter/counter_screen2.dart';
 
 class BottomModel
 {
@@ -10,7 +12,8 @@ class BottomModel
   BottomModel({this.title, this.icon});
 }
 
-class BottomScreen extends StatefulWidget {
+class BottomScreen extends StatefulWidget
+{
   @override
   _BottomScreenState createState() => _BottomScreenState();
 }
@@ -20,13 +23,9 @@ class _BottomScreenState extends State<BottomScreen>
   int selectedIndex = 0;
 
   List<Widget> myWidgets = [
-    DatabaseScreen(
-      showAppBar: false,
-    ),
+    CounterScreen(),
     HomeScreen(),
-    DatabaseScreen(
-      showAppBar: false,
-    ),
+    CounterScreen2(),
   ];
 
   List<BottomModel> myBottomNav = [
