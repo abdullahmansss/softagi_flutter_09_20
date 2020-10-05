@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/modules/counter/cubit/cubit.dart';
 import 'package:flutter_app/modules/counter/cubit/states.dart';

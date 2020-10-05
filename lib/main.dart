@@ -3,6 +3,8 @@ import 'package:flutter_app/database_screen.dart';
 import 'package:flutter_app/home.dart';
 import 'package:flutter_app/home_bottom.dart';
 import 'package:flutter_app/home_drawer.dart';
+import 'package:flutter_app/list_screen.dart';
+import 'package:flutter_app/modules/check/check_screen.dart';
 import 'package:flutter_app/modules/counter/cubit/cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget
       debugShowCheckedModeBanner: false,
       home: BlocProvider<CounterCubit>(
         create: (context) => CounterCubit(),
-        child: BottomScreen(),
+        child: CheckScreen(),
       ),
     );
   }
