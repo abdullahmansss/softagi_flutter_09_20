@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/database_screen.dart';
-import 'package:flutter_app/home.dart';
-import 'package:flutter_app/home_bottom.dart';
-import 'package:flutter_app/home_drawer.dart';
-import 'package:flutter_app/list_screen.dart';
-import 'package:flutter_app/modules/check/check_screen.dart';
-import 'package:flutter_app/modules/counter/cubit/cubit.dart';
+import 'package:flutter_app/modules/home/home_bottom.dart';
+import 'package:flutter_app/modules/news/cubit/cubit.dart';
 import 'package:flutter_app/modules/news/news_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,9 +16,9 @@ class MyApp extends StatelessWidget
   {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BlocProvider<CounterCubit>(
-        create: (context) => CounterCubit(),
-        child: NewsScreen(),
+      home: BlocProvider(
+        create: (context) => NewsCubit()..getData('business'),
+        child: BottomScreen(),
       ),
     );
   }

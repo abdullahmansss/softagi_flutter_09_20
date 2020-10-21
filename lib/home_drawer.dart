@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/database_screen.dart';
-import 'package:flutter_app/home_bottom.dart';
+import 'package:flutter_app/modules/home/home_bottom.dart';
 
 class HomeDrawer extends StatefulWidget {
   @override
