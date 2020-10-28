@@ -1,120 +1,113 @@
 import 'package:conditional_builder/conditional_builder.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app/modules/login/login_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app/modules/profile/cubit/cubit.dart';
+import 'package:flutter_app/modules/profile/cubit/states.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileScreen extends StatefulWidget
-{
-  @override
-  _ProfileScreenState createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen>
-{
-  Dio dio = Dio(
-    BaseOptions(
-      baseUrl: 'https://student.valuxapps.com/api/',
-      receiveDataWhenStatusError: true,
-    ),
-  );
-  var data;
-
-  @override
-  void initState()
-  {
-    getProfile();
-    super.initState();
-  }
-
+class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-      ),
-      body: ConditionalBuilder(
-        condition: data != null,
-        builder: (context) => Container(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '${data['name']}',
-                style: TextStyle(
-                  fontSize: 20.0,
-                ),
+    return BlocProvider(
+      create: (BuildContext context) => ProfileCubit()..getProfile(),
+      child: BlocConsumer<ProfileCubit, ProfileStates>(
+        listener: (context, state) {
+          if (state is ProfileStatesLogout) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginScreen(),
               ),
-              Text(
-                '${data['email']}',
-                style: TextStyle(
-                  fontSize: 20.0,
-                ),
-              ),
-              Text(
-                '${data['phone']}',
-                style: TextStyle(
-                  fontSize: 20.0,
-                ),
-              ),
-              Text(
-                '${data['id']}',
-                style: TextStyle(
-                  fontSize: 20.0,
-                ),
-              ),
-              FlatButton(
-                  onPressed: ()
-                  {
-                    logOut();
-                  },
-                  child: Text(
-                    'logout'.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 20.0,
+              (route) => false,
+            );
+          }
+        },
+        builder: (context, state) {
+          var data = ProfileCubit.get(context).data;
+
+          return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+            ),
+            body: ConditionalBuilder(
+              condition: state is! ProfileStatesLoading,
+              builder: (context) => Container(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: ()
+                      {
+                        ProfileCubit.get(context).pickImage();
+                      },
+                      child: Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          CircleAvatar(
+                            radius: 50.0,
+                            backgroundImage: ProfileCubit.get(context).file != null ? FileImage(ProfileCubit.get(context).file) : NetworkImage('https://cdn.pixabay.com/photo/2015/04/19/08/33/flower-729512__340.jpg'),
+                          ),
+                          CircleAvatar(
+                            radius: 15.0,
+                            backgroundColor: Colors.green,
+                            child: Icon(
+                              Icons.camera_alt,
+                              size: 16.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-              )
-            ],
-          ),
-        ),
-        fallback: (context) => Center(child: CircularProgressIndicator()),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Text(
+                      '${data['name']}',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    Text(
+                      '${data['email']}',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    Text(
+                      '${data['phone']}',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    Text(
+                      '${data['id']}',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        ProfileCubit.get(context).logOut();
+                      },
+                      child: Text(
+                        'logout'.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              fallback: (context) => Center(child: CircularProgressIndicator()),
+            ),
+          );
+        },
       ),
     );
-  }
-
-  getProfile() async
-  {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    var token = prefs.getString('token');
-
-    dio.options.headers = {
-      'lang':'en',
-      'Content-Type':'application/json',
-      'Authorization': token,
-    };
-    
-    await dio.get('profile').then((response)
-    {
-      data = response.data['data'];
-      setState(() {
-
-      });
-    });
-  }
-
-  logOut() async
-  {
-    await SharedPreferences.getInstance().then((value) {
-      value.setString('token', '').then((value)
-      {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => LoginScreen(),
-        ));
-      });
-    });
   }
 }

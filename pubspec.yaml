@@ -36,6 +36,7 @@ dependencies:
   conditional_builder: ^1.0.2
   dio: ^3.0.10
   shared_preferences: ^0.5.12+2
+  image_picker: ^0.6.7+12
 
 dev_dependencies:
   flutter_test:
