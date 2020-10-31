@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +9,15 @@ import 'package:flutter_app/modules/profile/cubit/cubit.dart';
 import 'package:flutter_app/modules/profile/cubit/states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileScreen extends StatelessWidget {
+import 'package:http/http.dart' as http;
+
+class ProfileScreen extends StatefulWidget
+{
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -72,7 +82,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${data['email']}',
+                      response.length != 0 ? '${response[0]['name']}' : '',
                       style: TextStyle(
                         fontSize: 20.0,
                       ),
@@ -90,8 +100,10 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                     FlatButton(
-                      onPressed: () {
-                        ProfileCubit.get(context).logOut();
+                      onPressed: ()
+                      {
+                        //ProfileCubit.get(context).logOut();
+                        getQuranData();
                       },
                       child: Text(
                         'logout'.toUpperCase(),
@@ -109,5 +121,22 @@ class ProfileScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  List response = [];
+
+  getQuranData() async
+  {
+    var url = 'http://api.quran-tafseer.com/quran/';
+    var jsonResponse = await http.get(url);
+
+    response = json.decode(jsonResponse.body);
+
+    print(response[0]['index']);
+    print(response[0]['name']);
+
+    setState(() {
+
+    });
   }
 }
