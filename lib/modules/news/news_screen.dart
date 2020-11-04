@@ -13,32 +13,35 @@ class NewsScreen extends StatelessWidget
   @override
   Widget build(BuildContext context)
   {
-    return BlocConsumer<NewsCubit, NewsStates>(
-      listener: (context, state) {},
-      builder: (context, state)
-      {
-        var list = NewsCubit.get(context).postsList;
-        var sports = NewsCubit.get(context).sportsList;
+    return BlocProvider(
+      create: (context) => NewsCubit(),
+      child: BlocConsumer<NewsCubit, NewsStates>(
+        listener: (context, state) {},
+        builder: (context, state)
+        {
+          var list = NewsCubit.get(context).postsList;
+          var sports = NewsCubit.get(context).sportsList;
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('News'),
-          ),
-          body: ConditionalBuilder(
-            condition: state is! NewsLoadingState,
-            builder: (ctx) => ListView.separated(
-              itemBuilder: (context, index) => buildItem(context, category ? list[index] : sports[index]),
-              separatorBuilder: (context, index) => Container(
-                height: 1.0,
-                width: double.infinity,
-                color: Colors.grey,
-              ),
-              itemCount: category ? list.length : sports.length,
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('News'),
             ),
-            fallback: (ctx) => Center(child: CircularProgressIndicator()),
-          ),
-        );
-      },
+            body: ConditionalBuilder(
+              condition: state is! NewsLoadingState,
+              builder: (ctx) => ListView.separated(
+                itemBuilder: (context, index) => buildItem(context, category ? list[index] : sports[index]),
+                separatorBuilder: (context, index) => Container(
+                  height: 1.0,
+                  width: double.infinity,
+                  color: Colors.grey,
+                ),
+                itemCount: category ? list.length : sports.length,
+              ),
+              fallback: (ctx) => Center(child: CircularProgressIndicator()),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -78,28 +81,6 @@ class NewsScreen extends StatelessWidget
               SizedBox(
                 height: 5.0,
               ),
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: Text(
-              //         'by : ${post['author']['name']}',
-              //         style: TextStyle(
-              //           fontSize: 14.0,
-              //           color: Colors.black,
-              //           fontWeight: FontWeight.w600,
-              //         ),
-              //       ),
-              //     ),
-              //     Text(
-              //       '${post['categories'][0]['name']}',
-              //       style: TextStyle(
-              //         fontSize: 14.0,
-              //         color: Colors.black,
-              //         fontWeight: FontWeight.w600,
-              //       ),
-              //     ),
-              //   ],
-              // ),
               SizedBox(
                 height: 5.0,
               ),

@@ -1,18 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_app/firebase/profile/profile_screen.dart';
 import 'package:toast/toast.dart';
 
-class RegisterScreen extends StatelessWidget
-{
+class RegisterScreen extends StatelessWidget {
   var nameController = TextEditingController();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Register'),
@@ -25,32 +25,24 @@ class RegisterScreen extends StatelessWidget
             TextFormField(
               controller: nameController,
               keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                hintText: 'username'
-              ),
+              decoration: InputDecoration(hintText: 'username'),
             ),
             TextFormField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                hintText: 'email'
-              ),
+              decoration: InputDecoration(hintText: 'email'),
             ),
             TextFormField(
               controller: passwordController,
               keyboardType: TextInputType.visiblePassword,
               obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'password'
-              ),
+              decoration: InputDecoration(hintText: 'password'),
             ),
             TextFormField(
               controller: confirmPasswordController,
               keyboardType: TextInputType.visiblePassword,
               obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'confirm password'
-              ),
+              decoration: InputDecoration(hintText: 'confirm password'),
             ),
             SizedBox(
               height: 20.0,
@@ -58,35 +50,32 @@ class RegisterScreen extends StatelessWidget
             Container(
               width: double.infinity,
               height: 40.0,
-              color:Colors.blue,
+              color: Colors.blue,
               child: FlatButton(
-                  onPressed: ()
-                  {
-                    String name = nameController.text;
-                    String email = emailController.text;
-                    String password = passwordController.text;
-                    String cPassword = confirmPasswordController.text;
+                onPressed: () {
+                  String name = nameController.text;
+                  String email = emailController.text;
+                  String password = passwordController.text;
+                  String cPassword = confirmPasswordController.text;
 
-                    if(name.isEmpty || email.isEmpty)
-                    {
-                      Toast.show('please enter a valid data', context);
-                      return;
-                    }
+                  if (name.isEmpty || email.isEmpty) {
+                    Toast.show('please enter a valid data', context);
+                    return;
+                  }
 
-                    if(password != cPassword)
-                    {
-                      Toast.show('passwords don\'t matching', context);
-                      return;
-                    }
+                  if (password != cPassword) {
+                    Toast.show('passwords don\'t matching', context);
+                    return;
+                  }
 
-                    createUser(name, email, password, context);
-                  },
-                  child: Text(
-                      'register'.toUpperCase(),
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                  createUser(name, email, password, context);
+                },
+                child: Text(
+                  'register'.toUpperCase(),
+                  style: TextStyle(
+                    color: Colors.white,
                   ),
+                ),
               ),
             ),
           ],
@@ -95,28 +84,43 @@ class RegisterScreen extends StatelessWidget
     );
   }
 
-  createUser(String name, String email, String password, context) async
+  createUser(name, email, password, context)
   {
-    FirebaseAuth
-        .instance
+    FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password)
-        .then((createdUser)
-        {
-          Toast.show(createdUser.user.uid, context);
-          print(createdUser.user.uid);
-          createdUser.user.sendEmailVerification();
-        })
-        .catchError((e)
-        {
-          switch(e.toString())
-          {
-            case '[firebase_auth/email-already-in-use] The email address is already in use by another account.':
-              Toast.show('any thing', context);
-              break;
-            case 'account':
-              Toast.show('any thing', context);
-              break;
-          }
-        });
+        .then((createdUser) {
+      Toast.show(createdUser.user.uid, context);
+      print(createdUser.user.uid);
+      createdUser.user.sendEmailVerification();
+
+      saveUser(name, email, createdUser.user.uid, context);
+    }).catchError((e) {
+      switch (e.toString()) {
+        case '[firebase_auth/email-already-in-use] The email address is already in use by another account.':
+          Toast.show('any thing', context);
+          break;
+        case 'account':
+          Toast.show('any thing', context);
+          break;
+      }
+    });
+  }
+
+  saveUser(name, email, uid, context)
+  {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    users.doc(uid).set({
+      'username': name,
+      'email': email,
+      'uId': uid,
+      'image': '',
+    }).then((value) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfileScreen(),
+          ));
+    }).catchError((e) {});
   }
 }
